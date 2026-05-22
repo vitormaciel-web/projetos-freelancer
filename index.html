@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cardápio – Beagle's Dog</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --yellow: #F5A800;
+    --yellow-light: #FFD147;
+    --black: #1A1A1A;
+    --dark: #111111;
+    --white: #FFFFFF;
+    --cream: #FFF8E7;
+    --red: #E63329;
+    --green: #25D366;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding-bottom: 100px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--yellow);
+    position: relative;
+    overflow: hidden;
+    padding: 40px 24px 32px;
+    text-align: center;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(45deg, transparent, transparent 18px, rgba(0,0,0,0.04) 18px, rgba(0,0,0,0.04) 20px);
+  }
+  .hero::after {
+    content: '✦ ✦ ✦';
+    position: absolute;
+    top: 14px;
+    right: 20px;
+    font-size: 12px;
+    color: rgba(0,0,0,0.2);
+    letter-spacing: 6px;
+  }
+  .logo-wrap { position: relative; display: inline-block; margin-bottom: 10px; }
+  .logo-circle {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    border: 4px solid var(--black);
+    background: var(--black);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+    overflow: hidden;
+  }
+  .brand-name {
+    font-family: 'Bangers', cursive;
+    font-size: 52px;
+    letter-spacing: 2px;
+    color: var(--black);
+    line-height: 1;
+    margin-top: 8px;
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.15);
+  }
+  .brand-tagline {
+    font-size: 13px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 3px;
+    color: var(--black); opacity: 0.6; margin-top: 4px;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--black); color: var(--yellow);
+    font-family: 'Bangers', cursive; font-size: 16px;
+    letter-spacing: 2px; padding: 6px 20px;
+    border-radius: 50px; margin-top: 14px;
+  }
+
+  /* ── CONTACT BAR ── */
+  .contact-bar {
+    background: var(--black);
+    display: flex; align-items: center; justify-content: center;
+    gap: 28px; padding: 12px 20px; flex-wrap: wrap;
+  }
+  .contact-item {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--white); font-weight: 700; font-size: 14px;
+    text-decoration: none;
+  }
+  .contact-item .icon {
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+  }
+  .icon-phone { background: #25D366; }
+  .icon-insta { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+
+  /* ── MENU BODY ── */
+  .menu-body {
+    padding: 28px 20px 20px;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .cat-label {
+    display: flex; align-items: center; gap: 12px;
+    margin: 32px 0 16px;
+  }
+  .cat-label::before, .cat-label::after {
+    content: ''; flex: 1; height: 2px;
+    background: linear-gradient(to right, transparent, var(--yellow));
+  }
+  .cat-label::after { background: linear-gradient(to left, transparent, var(--yellow)); }
+  .cat-label span {
+    font-family: 'Bangers', cursive; font-size: 20px;
+    letter-spacing: 3px; color: var(--yellow); white-space: nowrap;
+  }
+
+  /* item card */
+  .item {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #222; border-radius: 14px;
+    padding: 14px 18px; margin-bottom: 10px;
+    border-left: 4px solid var(--yellow);
+    position: relative; overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .item::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(to right, var(--yellow), transparent);
+    opacity: 0.4;
+  }
+  .item:hover { transform: translateX(4px); box-shadow: -4px 0 16px rgba(245,168,0,0.25); }
+  .item.featured { background: linear-gradient(135deg, #2a1f00, #1f1800); border-left-color: var(--yellow-light); border-top: 1px solid rgba(255,209,71,0.3); }
+  .item.featured .item-price { color: var(--yellow-light); }
+  .item.drink { border-left-color: #4fc3f7; }
+  .item.drink .item-price { color: #4fc3f7; }
+
+  .item-left { display: flex; align-items: center; gap: 12px; }
+  .item-emoji { font-size: 26px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)); flex-shrink: 0; }
+  .item-name { font-size: 15px; font-weight: 800; color: var(--white); line-height: 1.2; }
+
+  .item-right { display: flex; align-items: center; gap: 12px; }
+  .item-price { font-family: 'Bangers', cursive; font-size: 22px; color: var(--yellow); letter-spacing: 1px; white-space: nowrap; }
+
+  /* ── COUNTER ── */
+  .counter {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .counter-btn {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: none; cursor: pointer;
+    font-size: 18px; font-weight: 900; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.1s, background 0.1s;
+    flex-shrink: 0;
+  }
+  .counter-btn:active { transform: scale(0.9); }
+  .btn-minus { background: #333; color: #aaa; }
+  .btn-minus:hover { background: #444; }
+  .btn-plus { background: var(--yellow); color: var(--black); }
+  .btn-plus:hover { background: var(--yellow-light); }
+  .counter-qty {
+    font-family: 'Bangers', cursive; font-size: 20px;
+    color: var(--white); min-width: 18px; text-align: center;
+  }
+
+  /* ── FLOATING CART ── */
+  .cart-fab {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--green);
+    color: white; border: none; cursor: pointer;
+    font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 900;
+    padding: 16px 32px; border-radius: 50px;
+    box-shadow: 0 6px 28px rgba(37,211,102,0.5);
+    display: flex; align-items: center; gap: 10px;
+    white-space: nowrap;
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 100;
+    animation: pulse-green 2s infinite;
+  }
+  .cart-fab:hover { transform: translateX(-50%) translateY(-3px); box-shadow: 0 10px 36px rgba(37,211,102,0.65); }
+  .cart-fab.hidden { display: none; }
+  .cart-fab svg { width: 22px; height: 22px; flex-shrink: 0; }
+  .cart-badge {
+    background: var(--yellow); color: var(--black);
+    border-radius: 50px; padding: 2px 10px;
+    font-size: 14px; font-weight: 900;
+  }
+
+  @keyframes pulse-green {
+    0%, 100% { box-shadow: 0 6px 28px rgba(37,211,102,0.5); }
+    50%       { box-shadow: 0 6px 40px rgba(37,211,102,0.8); }
+  }
+
+  /* ── MODAL OVERLAY ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 200;
+    display: flex; align-items: flex-end; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: #1c1c1c;
+    border-radius: 24px 24px 0 0;
+    padding: 28px 24px 40px;
+    width: 100%; max-width: 560px;
+    max-height: 90vh; overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.32,0.72,0,1);
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+
+  .modal-handle {
+    width: 40px; height: 4px; border-radius: 4px;
+    background: #444; margin: 0 auto 20px;
+  }
+  .modal-title {
+    font-family: 'Bangers', cursive; font-size: 28px;
+    color: var(--yellow); letter-spacing: 2px; margin-bottom: 20px;
+    text-align: center;
+  }
+
+  /* resumo do pedido no modal */
+  .order-summary { margin-bottom: 24px; }
+  .order-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid #2a2a2a;
+    color: var(--white); font-weight: 700; font-size: 14px;
+  }
+  .order-item:last-child { border-bottom: none; }
+  .order-item-name { flex: 1; }
+  .order-item-qty { color: var(--yellow); margin: 0 8px; font-family: 'Bangers', cursive; font-size: 18px; }
+  .order-item-price { color: #aaa; font-size: 13px; white-space: nowrap; }
+
+  .order-total {
+    display: flex; justify-content: space-between;
+    background: #2a2a2a; border-radius: 12px;
+    padding: 14px 18px; margin-bottom: 24px;
+    font-weight: 900; font-size: 18px; color: var(--white);
+  }
+  .order-total span { font-family: 'Bangers', cursive; font-size: 26px; color: var(--yellow); }
+
+
+  .form-error {
+    color: var(--red);
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 5px;
+    display: none;
+  }
+  .form-error.visible { display: block; }
+  .form-input.error { border-color: var(--red) !important; }
+
+  /* campos do formulário */
+  .form-group { margin-bottom: 16px; }
+  .form-label { font-size: 13px; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: block; }
+  .form-input {
+    width: 100%; background: #2a2a2a; border: 2px solid #333;
+    border-radius: 12px; padding: 14px 16px;
+    color: var(--white); font-family: 'Nunito', sans-serif;
+    font-size: 15px; font-weight: 700;
+    outline: none; transition: border-color 0.2s;
+  }
+  .form-input:focus { border-color: var(--yellow); }
+  .form-input::placeholder { color: #555; font-weight: 600; }
+
+
+  .order-type-btn {
+    flex: 1; padding: 12px; border-radius: 12px;
+    border: 2px solid #333; background: #2a2a2a;
+    color: #888; font-family: 'Nunito', sans-serif;
+    font-size: 14px; font-weight: 800; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .order-type-btn.active {
+    border-color: var(--yellow); background: rgba(245,168,0,0.1);
+    color: var(--yellow);
+  }
+
+  .btn-confirm {
+    width: 100%; background: var(--green);
+    color: white; border: none; cursor: pointer;
+    font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 900;
+    padding: 18px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin-top: 8px;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-confirm:hover { background: #1eb858; }
+  .btn-confirm:active { transform: scale(0.98); }
+  .btn-confirm svg { width: 22px; height: 22px; }
+
+  .btn-cancel {
+    width: 100%; background: transparent;
+    color: #666; border: 2px solid #333; cursor: pointer;
+    font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800;
+    padding: 14px; border-radius: 14px; margin-top: 10px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-cancel:hover { border-color: #555; color: #999; }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--yellow); text-align: center;
+    padding: 24px 20px; position: relative; overflow: hidden;
+  }
+  .footer::before {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(0,0,0,0.04) 10px, rgba(0,0,0,0.04) 12px);
+  }
+  .footer-txt { position: relative; font-family: 'Bangers', cursive; font-size: 18px; letter-spacing: 2px; color: var(--black); }
+  .footer-sub { position: relative; font-size: 12px; font-weight: 700; color: rgba(0,0,0,0.5); margin-top: 4px; text-transform: uppercase; letter-spacing: 2px; }
+
+  .star { display: inline-block; animation: spin 4s linear infinite; font-size: 18px; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  .item { animation: slideIn 0.4s ease both; }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: translateX(0); } }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="logo-wrap">
+    <div class="logo-circle">
+      <img src="data:image/png;base64,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" 
+           alt="Beagle's Dog" style="width:90px;height:90px;object-fit:cover;border-radius:50%;"/>
+    </div>
+  </div>
+  <div class="brand-name">Beagle's Dog</div>
+  <div class="brand-tagline">O melhor cachorro-quente da cidade</div>
+  <div class="badge">🍟 CARDÁPIO 🍟</div>
+</div>
+
+<!-- ── CONTACT BAR ── -->
+<div class="contact-bar">
+  <a class="contact-item" href="tel:51995192139">
+    <div class="icon icon-phone">📞</div>
+    <span>(51) 99519-2139</span>
+  </a>
+  <a class="contact-item" href="https://instagram.com/beaglesdog01" target="_blank">
+    <div class="icon icon-insta">📷</div>
+    <span>@beaglesdog01</span>
+  </a>
+</div>
+
+<!-- ── MENU ── -->
+<div class="menu-body">
+
+  <div class="cat-label"><span>🌭 CACHORROS-QUENTES</span></div>
+
+  <div class="item" data-name="Dog Simples" data-price="14">
+    <div class="item-left">
+      <span class="item-emoji">🌭</span>
+      <div>
+        <div class="item-name">Dog Simples</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$14</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="item" data-name="Dog Duplo" data-price="16">
+    <div class="item-left">
+      <span class="item-emoji">🌭</span>
+      <div>
+        <div class="item-name">Dog Duplo</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$16</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="item featured" data-name="Dog Frango" data-price="18">
+    <div class="item-left">
+      <span class="item-emoji">🍗</span>
+      <div>
+        <div class="item-name">Dog Frango</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$18</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="item" data-name="Dog Calabresa Simples" data-price="15">
+    <div class="item-left">
+      <span class="item-emoji">🥩</span>
+      <div>
+        <div class="item-name">Dog Calabresa Simples</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$15</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="item featured" data-name="Dog Calabresa Duplo" data-price="18">
+    <div class="item-left">
+      <span class="item-emoji">🥩</span>
+      <div>
+        <div class="item-name">Dog Calabresa Duplo</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$18</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="item featured" data-name="Dog Strogonoff de Carne" data-price="21">
+    <div class="item-left">
+      <span class="item-emoji">⭐</span>
+      <div>
+        <div class="item-name">Dog Strogonoff de Carne</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$21</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="item" data-name="Dog Linguiça Simples" data-price="19">
+    <div class="item-left">
+      <span class="item-emoji">🌶️</span>
+      <div>
+        <div class="item-name">Dog Linguiça Simples</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$19</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="item featured" data-name="Dog Linguiça Duplo" data-price="24">
+    <div class="item-left">
+      <span class="item-emoji">🌶️</span>
+      <div>
+        <div class="item-name">Dog Linguiça Duplo</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$24</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="item featured" data-name="Dog Frango e Salsicha" data-price="20">
+    <div class="item-left">
+      <span class="item-emoji">🔥</span>
+      <div>
+        <div class="item-name">Dog Frango e Salsicha</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$20</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="item featured" data-name="Dog Frango e Calabresa" data-price="21">
+    <div class="item-left">
+      <span class="item-emoji">🔥</span>
+      <div>
+        <div class="item-name">Dog Frango e Calabresa</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$21</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="item featured" data-name="Dog Calabresa com Salsicha" data-price="17">
+    <div class="item-left">
+      <span class="item-emoji">🔥</span>
+      <div>
+        <div class="item-name">Dog Calabresa com Salsicha</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$17</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cat-label"><span>🥤 BEBIDAS</span></div>
+
+  <div class="item drink" data-name="Refri Lata 350ml" data-price="7">
+    <div class="item-left">
+      <span class="item-emoji">🥤</span>
+      <div>
+        <div class="item-name">Refri Lata</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$7</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="item drink" data-name="Refri 600ml" data-price="9">
+    <div class="item-left">
+      <span class="item-emoji">🥤</span>
+      <div>
+        <div class="item-name">Refri 600ml</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$9</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="item drink" data-name="Refri 1 Litro" data-price="12">
+    <div class="item-left">
+      <span class="item-emoji">🍾</span>
+      <div>
+        <div class="item-name">Refri 1 Litro</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$12</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="item drink" data-name="Suco Skinka" data-price="8">
+    <div class="item-left">
+      <span class="item-emoji">🧃</span>
+      <div>
+        <div class="item-name">Suco Skinka</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$8</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="item drink" data-name="Água Mineral" data-price="5">
+    <div class="item-left">
+      <span class="item-emoji">💧</span>
+      <div>
+        <div class="item-name">Água</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$5</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cat-label"><span>🍺 CERVEJAS</span></div>
+
+  <div class="item drink" data-name="Ceva Latão 473ml" data-price="10">
+    <div class="item-left">
+      <span class="item-emoji">🍺</span>
+      <div>
+        <div class="item-name">Ceva Latão</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$10</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="item drink" data-name="Long Neck 355ml" data-price="12">
+    <div class="item-left">
+      <span class="item-emoji">🍻</span>
+      <div>
+        <div class="item-name">Long Neck</div>
+      </div>
+    </div>
+    <div class="item-right">
+      <div class="item-price">R$12</div>
+      <div class="counter">
+        <button class="counter-btn btn-minus" onclick="changeQty(this, -1)">−</button>
+        <span class="counter-qty">0</span>
+        <button class="counter-btn btn-plus" onclick="changeQty(this, 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── FOOTER ── -->
+<div class="footer">
+  <div class="footer-txt"><span class="star">✦</span> &nbsp;A FOME NÃO ESPERA. NÓS TAMPOCO.&nbsp; <span class="star">✦</span></div>
+  <div class="footer-sub">Seu dog favorito chegando até você 🛵🌭</div>
+</div>
+
+<!-- ── BOTÃO FLUTUANTE DO CARRINHO ── -->
+<button class="cart-fab hidden" id="cartFab" onclick="openModal()">
+  <svg viewBox="0 0 24 24" fill="white">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+  Ver pedido &nbsp;<span class="cart-badge" id="cartCount">0</span>
+</button>
+
+<!-- ── MODAL DE CONFIRMAÇÃO ── -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🛒 Seu Pedido</div>
+
+    <div class="order-summary" id="orderSummary"></div>
+
+    <div class="order-total">
+      <span>Total</span>
+      <span id="orderTotal">R$0</span>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="clientName">Seu nome</label>
+      <input class="form-input" id="clientName" type="text" placeholder="Ex: João Silva" autocomplete="name">
+      <div class="form-error" id="nameError">Por favor, informe seu nome</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Tipo de pedido</label>
+      <div style="display:flex;gap:10px;margin-top:4px;">
+        <button class="order-type-btn active" id="btnDelivery" onclick="setOrderType('delivery')">🛵 Entrega</button>
+        <button class="order-type-btn" id="btnPickup" onclick="setOrderType('pickup')">🏪 Retirada</button>
+      </div>
+    </div>
+    <div class="form-group" id="addressGroup">
+      <label class="form-label" for="clientAddress">Endereço de entrega</label>
+      <input class="form-input" id="clientAddress" type="text" placeholder="Ex: Rua das Flores, 123 – Apto 5" autocomplete="street-address">
+      <div class="form-error" id="addressError">Por favor, informe o endereço</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="clientObs">Observações (opcional)</label>
+      <input class="form-input" id="clientObs" type="text" placeholder="Ex: Sem cebola, capricha no molho...">
+    </div>
+
+    <button class="btn-confirm" onclick="sendToWhatsApp()">
+      <svg viewBox="0 0 24 24" fill="white">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      Enviar pedido pelo WhatsApp
+    </button>
+
+    <button class="btn-cancel" onclick="closeModal()">← Voltar ao cardápio</button>
+  </div>
+</div>
+
+<script>
+  // ── ANIMAÇÕES DINÂMICAS (sem limite de nth-child) ──
+  document.querySelectorAll('.item').forEach((el, i) => {
+    el.style.animationDelay = `${(i + 1) * 0.05}s`;
+  });
+
+  // ── TIPO DE PEDIDO ──
+  let orderType = 'delivery';
+
+  function setOrderType(type) {
+    orderType = type;
+    document.getElementById('btnDelivery').classList.toggle('active', type === 'delivery');
+    document.getElementById('btnPickup').classList.toggle('active', type === 'pickup');
+    document.getElementById('addressGroup').style.display = type === 'delivery' ? 'block' : 'none';
+    if (type === 'pickup') clearError('clientAddress', 'addressError');
+  }
+
+  // ── LÓGICA DO CARRINHO ──
+  function changeQty(btn, delta) {
+    const counter = btn.parentElement;
+    const qtyEl = counter.querySelector('.counter-qty');
+    let qty = parseInt(qtyEl.textContent) + delta;
+    if (qty < 0) qty = 0;
+    qtyEl.textContent = qty;
+    updateCart();
+  }
+
+  function updateCart() {
+    const items = document.querySelectorAll('.item[data-name]');
+    let totalQty = 0;
+    items.forEach(item => {
+      const qty = parseInt(item.querySelector('.counter-qty').textContent);
+      totalQty += qty;
+    });
+    const fab = document.getElementById('cartFab');
+    const badge = document.getElementById('cartCount');
+    badge.textContent = totalQty;
+    fab.classList.toggle('hidden', totalQty === 0);
+  }
+
+  // ── MODAL ──
+  function openModal() {
+    buildSummary();
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+    document.querySelectorAll('.form-error').forEach(e => e.classList.remove('visible'));
+    document.querySelectorAll('.form-input').forEach(e => e.classList.remove('error'));
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  function buildSummary() {
+    const items = document.querySelectorAll('.item[data-name]');
+    const summary = document.getElementById('orderSummary');
+    let html = '';
+    let total = 0;
+
+    items.forEach(item => {
+      const qty = parseInt(item.querySelector('.counter-qty').textContent);
+      if (qty > 0) {
+        const name = item.dataset.name;
+        const price = parseFloat(item.dataset.price);
+        const subtotal = qty * price;
+        total += subtotal;
+        html += `
+          <div class="order-item">
+            <span class="order-item-name">${name}</span>
+            <span class="order-item-qty">${qty}x</span>
+            <span class="order-item-price">R$${subtotal.toFixed(2).replace('.', ',')}</span>
+          </div>`;
+      }
+    });
+
+    summary.innerHTML = html;
+    document.getElementById('orderTotal').textContent = `R$${total.toFixed(2).replace('.', ',')}`;
+  }
+
+  // ── VALIDAÇÃO ──
+  function showError(inputId, errorId) {
+    const el = document.getElementById(inputId);
+    if (el) { el.classList.add('error'); el.focus(); }
+    const err = document.getElementById(errorId);
+    if (err) err.classList.add('visible');
+  }
+
+  function clearError(inputId, errorId) {
+    const el = document.getElementById(inputId);
+    if (el) el.classList.remove('error');
+    const err = document.getElementById(errorId);
+    if (err) err.classList.remove('visible');
+  }
+
+  // ── ENVIAR PARA WHATSAPP ──
+  function sendToWhatsApp() {
+    const name = document.getElementById('clientName').value.trim();
+    const address = orderType === 'delivery' ? document.getElementById('clientAddress').value.trim() : '';
+    const obs = document.getElementById('clientObs').value.trim();
+    let valid = true;
+
+    clearError('clientName', 'nameError');
+    if (orderType === 'delivery') clearError('clientAddress', 'addressError');
+
+    if (!name) { showError('clientName', 'nameError'); valid = false; }
+    if (orderType === 'delivery' && !address) { showError('clientAddress', 'addressError'); valid = false; }
+    if (!valid) return;
+
+    const items = document.querySelectorAll('.item[data-name]');
+    let pedidoLinhas = '';
+    let total = 0;
+
+    items.forEach(item => {
+      const qty = parseInt(item.querySelector('.counter-qty').textContent);
+      if (qty > 0) {
+        const itemName = item.dataset.name;
+        const price = parseFloat(item.dataset.price);
+        const subtotal = qty * price;
+        total += subtotal;
+        pedidoLinhas += `• ${qty}x ${itemName} — R$${subtotal.toFixed(2).replace('.', ',')}\n`;
+      }
+    });
+
+    const tipoEntrega = orderType === 'delivery'
+      ? `📍 *Endereço:* ${address}`
+      : `🏪 *Retirada no local*`;
+
+    const obsLine = obs ? `\n💬 *Obs:* ${obs}` : '';
+
+    const msg =
+      `🐾 *Novo Pedido – Beagle's Dog*\n\n` +
+      `👤 *Nome:* ${name}\n` +
+      `${tipoEntrega}${obsLine}\n\n` +
+      `🛒 *Itens do pedido:*\n${pedidoLinhas}\n` +
+      `💰 *Total: R$${total.toFixed(2).replace('.', ',')}*`;
+
+    const url = `https://wa.me/5551995192139?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  }
+</script>
+
+</body>
+</html>
