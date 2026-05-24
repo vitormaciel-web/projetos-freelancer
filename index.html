@@ -721,6 +721,29 @@
       <div class="form-error" id="addressError">Por favor, informe o endereço</div>
     </div>
     <div class="form-group">
+      <label class="form-label">Forma de pagamento</label>
+      <div style="display:flex;gap:10px;margin-top:4px;">
+        <button class="order-type-btn active" id="btnDinheiro" onclick="setPayment('dinheiro')">💵 Dinheiro</button>
+        <button class="order-type-btn" id="btnCartao" onclick="setPayment('cartao')">💳 Cartão</button>
+        <button class="order-type-btn" id="btnPix" onclick="setPayment('pix')">⚡ Pix</button>
+      </div>
+    </div>
+
+    <div class="form-group" id="trocoGroup">
+      <label class="form-label">Precisa de troco?</label>
+      <div style="display:flex;gap:10px;margin-top:4px;">
+        <button class="order-type-btn" id="btnTrocoSim" onclick="setTroco(true)">✅ Sim</button>
+        <button class="order-type-btn active" id="btnTrocoNao" onclick="setTroco(false)">❌ Não</button>
+      </div>
+    </div>
+
+    <div class="form-group" id="trocoValorGroup" style="display:none;">
+      <label class="form-label" for="trocoValor">Troco para quanto?</label>
+      <input class="form-input" id="trocoValor" type="number" placeholder="Ex: 50" min="0">
+      <div class="form-error" id="trocoError">Por favor, informe o valor para o troco</div>
+    </div>
+
+    <div class="form-group">
       <label class="form-label" for="clientObs">Observações (opcional)</label>
       <input class="form-input" id="clientObs" type="text" placeholder="Ex: Sem cebola, capricha no molho...">
     </div>
@@ -741,6 +764,30 @@
   document.querySelectorAll('.item').forEach((el, i) => {
     el.style.animationDelay = `${(i + 1) * 0.05}s`;
   });
+
+  // ── PAGAMENTO ──
+  let paymentType = 'dinheiro';
+  let needsTroco = false;
+
+  function setPayment(type) {
+    paymentType = type;
+    ['btnDinheiro','btnCartao','btnPix'].forEach(id => document.getElementById(id).classList.remove('active'));
+    document.getElementById('btn' + type.charAt(0).toUpperCase() + type.slice(1)).classList.add('active');
+    document.getElementById('trocoGroup').style.display = type === 'dinheiro' ? 'block' : 'none';
+    if (type !== 'dinheiro') {
+      needsTroco = false;
+      document.getElementById('trocoValorGroup').style.display = 'none';
+      clearError('trocoValor', 'trocoError');
+    }
+  }
+
+  function setTroco(val) {
+    needsTroco = val;
+    document.getElementById('btnTrocoSim').classList.toggle('active', val);
+    document.getElementById('btnTrocoNao').classList.toggle('active', !val);
+    document.getElementById('trocoValorGroup').style.display = val ? 'block' : 'none';
+    if (!val) clearError('trocoValor', 'trocoError');
+  }
 
   // ── TIPO DE PEDIDO ──
   let orderType = 'delivery';
@@ -842,11 +889,15 @@
     const obs = document.getElementById('clientObs').value.trim();
     let valid = true;
 
+    const trocoValor = needsTroco ? document.getElementById('trocoValor').value.trim() : '';
+
     clearError('clientName', 'nameError');
     if (orderType === 'delivery') clearError('clientAddress', 'addressError');
+    clearError('trocoValor', 'trocoError');
 
     if (!name) { showError('clientName', 'nameError'); valid = false; }
     if (orderType === 'delivery' && !address) { showError('clientAddress', 'addressError'); valid = false; }
+    if (needsTroco && !trocoValor) { showError('trocoValor', 'trocoError'); valid = false; }
     if (!valid) return;
 
     const items = document.querySelectorAll('.item[data-name]');
@@ -868,12 +919,18 @@
       ? `📍 *Endereço:* ${address}`
       : `🏪 *Retirada no local*`;
 
+    const payLabels = { dinheiro: '💵 Dinheiro', cartao: '💳 Cartão', pix: '⚡ Pix' };
+    const trocoLine = paymentType === 'dinheiro'
+      ? (needsTroco ? `\n💸 *Troco para:* R$${parseFloat(trocoValor).toFixed(2).replace('.', ',')}` : `\n💸 *Troco:* Não precisa`)
+      : '';
+    const pagamentoLine = `\n💳 *Pagamento:* ${payLabels[paymentType]}${trocoLine}`;
+
     const obsLine = obs ? `\n💬 *Obs:* ${obs}` : '';
 
     const msg =
       `🐾 *Novo Pedido – Beagle's Dog*\n\n` +
       `👤 *Nome:* ${name}\n` +
-      `${tipoEntrega}${obsLine}\n\n` +
+      `${tipoEntrega}${pagamentoLine}${obsLine}\n\n` +
       `🛒 *Itens do pedido:*\n${pedidoLinhas}\n` +
       `💰 *Total: R$${total.toFixed(2).replace('.', ',')}*`;
 
